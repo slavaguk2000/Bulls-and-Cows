@@ -10,6 +10,7 @@
 1.2.1.1 [Предыстория](#history) 
 
 1.2.1.2 [Правила игры](#rules) 
+
 1.2.2 [Возможности бизнеса](#business_opportunities)  
 1.2.3 [Границы проекта](#project_boundary)  
 1.3 [Аналоги](#analogues)  
