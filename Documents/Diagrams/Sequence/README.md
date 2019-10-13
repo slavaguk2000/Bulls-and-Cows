@@ -8,14 +8,14 @@
 <a name="1"/>
 
 # 1. Сделать ход 
-![Диаграмма последовательностей 1](../../../Image/Diagrams/activitySequence1.png)
+![Диаграмма последовательностей 1](../../../Image/Diagrams/sequenceDiagram1.png)
 
 <a name="2"/>
 
 # 2. Окончание игры во время раунда
-![Диаграмма последовательностей 2](../../../Image/Diagrams/activitySequence2.png)
+![Диаграмма последовательностей 2](../../../Image/Diagrams/sequenceDiagram2.png)
 
 <a name="3"/>
 
 # 3. Конец игры
-![Диаграмма последовательностей 3](../../../Image/Diagrams/activitySequence3.png)
+![Диаграмма последовательностей 3](../../../Image/Diagrams/sequenceDiagram3.png)
