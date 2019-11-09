@@ -23,12 +23,12 @@ public class View extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        new Model();
-        new Controller(primaryStage);
+        Model.getInstance().startSocket();
+        Controller controller = new Controller(primaryStage);
 
-        primaryStage.setTitle("Model");
-        primaryStage.setMaxWidth(700);
-        primaryStage.setMinWidth(700);
+        primaryStage.setTitle("Bulls and Cows");
+        primaryStage.setMaxWidth(400);
+        primaryStage.setMinWidth(400);
         primaryStage.setMinHeight(300);
 
 
@@ -68,7 +68,7 @@ public class View extends Application {
         primaryStage.setOnCloseRequest(e -> {
             e.consume();
             primaryStage.close();
-            Model.continueServerStop = false;
+            Model.getInstance().setContinueServerStop(false);
             Model.end();
         });
 
@@ -76,7 +76,7 @@ public class View extends Application {
         hBox.setPadding(new Insets(5));
         hBox.setAlignment(Pos.CENTER);
         hBox.getChildren().addAll(opponentTable, myTable);
-        primaryStage.setScene(new Scene(hBox, 700, 300));
+        primaryStage.setScene(new Scene(hBox, 400, 300));
         primaryStage.show();
     }
 

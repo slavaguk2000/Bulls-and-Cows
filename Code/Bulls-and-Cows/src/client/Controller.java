@@ -1,4 +1,4 @@
-﻿package client;
+package client;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -18,11 +18,11 @@ import javafx.stage.Stage;
 
 public class Controller {
 
-    public Controller(Stage primaryStage) {
+    Controller(Stage primaryStage) {
         Thread serverErrorThread = new Thread(() -> {// server not activate
             Runnable updater = () -> {
-                if (Model.beginServerStop && Model.continueServerStop) {
-                    Model.beginServerStop = false;
+                if (Model.getInstance().isBeginServerStop()&& Model.getInstance().isContinueServerStop()) {
+                    Model.getInstance().setBeginServerStop(false);
                     Stage exitStage = new Stage();
                     exitStage.initModality(Modality.APPLICATION_MODAL);
                     exitStage.setTitle("Warning");
@@ -53,26 +53,29 @@ public class Controller {
 
         Thread turnThread = new Thread(() -> {// window with request to enter number
             Runnable updater = () -> {
-                if (Model.reset) {
+                if (Model.getInstance().isReset()) {
                     View.myData.clear();
                     View.opponentData.clear();
-                    Model.reset();
-                    Model.reset = false;
+                    Model.getInstance().reset();
+                    Model.getInstance().setReset(false);
                 }
-                if (Model.myTurn) {
-                    if (Model.opponentGuess != null && Model.opponentGuess.equals(Model.myNumber)) {
-                        View.opponentData.add(new Data(Model.opponentGuess, countCowBull(Model.opponentGuess, Model.myNumber)));
+                if (Model.getInstance().isMyTurn()) {
+                    if (Model.getInstance().getOpponentGuess() != null
+                            && Model.getInstance().getOpponentGuess().equals(Model.getInstance().getMyNumber())) {
+                        View.opponentData.add(new Data(Model.getInstance().getOpponentGuess(),
+                                countCowBull(Model.getInstance().getOpponentGuess(), Model.getInstance().getMyNumber())));
                         winWindow(primaryStage, false);
-                        Model.myGuess = "null";
-                        Model.sendServer = true;
-                    } else if (Model.myNumber == null)
+                        Model.getInstance().setMyGuess("null");
+                        Model.getInstance().setSendServer(true);
+                    } else if (Model.getInstance().getMyNumber() == null)
                         secondWindow(primaryStage, "Please, make your number", "Your number");
                     else {
-                        if (Model.opponentGuess != null)
-                            View.opponentData.add(new Data(Model.opponentGuess, countCowBull(Model.opponentGuess, Model.myNumber)));
+                        if (Model.getInstance().getOpponentGuess() != null)
+                            View.opponentData.add(new Data(Model.getInstance().getOpponentGuess(),
+                                    countCowBull(Model.getInstance().getOpponentGuess(), Model.getInstance().getMyNumber())));
                         secondWindow(primaryStage, "Please, try to guess opponent number", "Opponent number");
                     }
-                    Model.myTurn = false;
+                    Model.getInstance().setMyTurn(false);
                 }
 
             };
@@ -112,19 +115,20 @@ public class Controller {
 
     private void handleCloseRequest(Stage primaryStage) {
         primaryStage.close();
-        Model.continueServerStop = false;
+        Model.getInstance().setContinueServerStop(false);
         Model.end();
     }
 
     private void handleTextField(Stage secondStage, TextField textField) {
         String num = textField.getText();
         if (checkTextField(num)) {
-            if (Model.myNumber == null) Model.myNumber = num;
+            if (Model.getInstance().getMyNumber() == null) Model.getInstance().setMyNumber(num);
             else {
-                Model.myGuess = num;
-                View.myData.add(new Data(Model.myGuess, countCowBull(Model.myGuess, Model.opponentNumber)));
+                Model.getInstance().setMyGuess(num);
+                View.myData.add(new Data(Model.getInstance().getMyGuess(),
+                        countCowBull(Model.getInstance().getMyGuess(), Model.getInstance().getOpponentNumber())));
             }
-            Model.sendServer = true;
+            Model.getInstance().setSendServer(true);
             secondStage.close();
         }
     }
@@ -135,7 +139,7 @@ public class Controller {
         secondStage.initModality(Modality.APPLICATION_MODAL);
         secondStage.setResizable(false);
         secondStage.setWidth(210);
-        secondStage.setHeight(350);
+        secondStage.setHeight(200);
         secondStage.setX(primaryStage.getX() + primaryStage.getWidth() / 2 - secondStage.getWidth() / 2);
         secondStage.setY(primaryStage.getY() + primaryStage.getHeight() / 2 - secondStage.getHeight() / 2);
         Label labelResult = new Label();
@@ -162,9 +166,9 @@ public class Controller {
         buttonYes.setOnAction(e -> {
             View.myData.clear();
             View.opponentData.clear();
-            Model.reset();
-            Model.myGuess = "yourTurn";
-            Model.sendServer = true;
+            Model.getInstance().reset();
+            Model.getInstance().setMyGuess("yourTurn");
+            Model.getInstance().setSendServer(true);
             secondStage.close();
         });
 
@@ -199,7 +203,8 @@ public class Controller {
         textField.setOnKeyPressed(e-> {
             if (e.getCode().equals(KeyCode.ENTER)) {
                 handleTextField(secondStage, textField);
-                if (Model.myGuess != null && Model.myGuess.equals(Model.opponentNumber)) {
+                if (Model.getInstance().getMyGuess() != null
+                        && Model.getInstance().getMyGuess().equals(Model.getInstance().getOpponentNumber())) {
                     winWindow(primaryStage, true);
                 }
             }
@@ -211,7 +216,8 @@ public class Controller {
         });
         button.setOnAction(e -> {
             handleTextField(secondStage, textField);
-            if (Model.myGuess != null && Model.myGuess.equals(Model.opponentNumber)) {
+            if (Model.getInstance().getMyGuess() != null
+                    && Model.getInstance().getMyGuess().equals(Model.getInstance().getOpponentNumber())) {
                 winWindow(primaryStage, true);
             }
         });

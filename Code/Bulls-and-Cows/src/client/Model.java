@@ -1,9 +1,16 @@
 package client;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.SocketException;
 
 public class Model extends Thread {
+    private static Model instance;
     private static Socket socket;
     private boolean beginServerStop;
     private boolean continueServerStop = true;
@@ -16,8 +23,86 @@ public class Model extends Thread {
     private boolean sendServer;
     private boolean reset;
 
-    Model() {
+    private Model() {
+    }
+
+    public void startSocket(){
         start();
+    }
+
+    public static Model getInstance() {
+        if (instance == null) {
+            instance = new Model();
+        }
+        return instance;
+    }
+
+    public boolean isBeginServerStop() {
+        return beginServerStop;
+    }
+
+    public void setBeginServerStop(boolean beginServerStop) {
+        this.beginServerStop = beginServerStop;
+    }
+
+    public boolean isContinueServerStop() {
+        return continueServerStop;
+    }
+
+    public void setContinueServerStop(boolean continueServerStop) {
+        this.continueServerStop = continueServerStop;
+    }
+
+    public boolean isMyTurn() {
+        return myTurn;
+    }
+
+    public void setMyTurn(boolean myTurn) {
+        this.myTurn = myTurn;
+    }
+
+    public String getMyGuess() {
+        return myGuess;
+    }
+
+    public void setMyGuess(String myGuess) {
+        this.myGuess = myGuess;
+    }
+
+    public String getOpponentGuess() {
+        return opponentGuess;
+    }
+
+    public String getMyNumber() {
+        return myNumber;
+    }
+
+    public void setMyNumber(String myNumber) {
+        this.myNumber = myNumber;
+    }
+
+    public String getOpponentNumber() {
+        return opponentNumber;
+    }
+
+    public void setSendServer(boolean sendServer) {
+        this.sendServer = sendServer;
+    }
+
+    public boolean isReset() {
+        return reset;
+    }
+
+    public void setReset(boolean reset) {
+        this.reset = reset;
+    }
+
+    static void end() {
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void reset() {
@@ -99,14 +184,6 @@ public class Model extends Thread {
                 } catch (IOException ex) {
                 }
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    static void end() {
-        try {
-            socket.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
