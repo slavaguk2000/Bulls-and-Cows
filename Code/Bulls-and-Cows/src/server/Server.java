@@ -18,7 +18,6 @@ public class Server {
     }
 
     private static void begin() {   //create server socket
-
         try {
             server = new ServerSocket(4444, 0, InetAddress.getLocalHost());//192.168.31.245
             server.setSoTimeout(60000);
@@ -30,7 +29,6 @@ public class Server {
     private static void handle() {
         try {
             while (true) {
-
                 if (clientHandlerList.size() == 2) {
                     if (!server.isClosed()) {
                         server.close();
@@ -41,18 +39,20 @@ public class Server {
                     }
                     if (isFirstServerChange()) {
                         firstServerChange();
-                    } else if (clientHandlerList.getFirst().yourTurn && !clientHandlerList.getLast().yourTurn && clientHandlerList.getFirst().wait) {
+                    } else if (clientHandlerList.getFirst().isYourTurn() && !clientHandlerList.getLast().isYourTurn()
+                            && clientHandlerList.getFirst().isWait()) {
                         changeTurn(true);
 
-                    } else if (clientHandlerList.getLast().yourTurn && !clientHandlerList.getFirst().yourTurn && clientHandlerList.getLast().wait) {
+                    } else if (clientHandlerList.getLast().isYourTurn() && !clientHandlerList.getFirst().isYourTurn()
+                            && clientHandlerList.getLast().isWait()) {
                         changeTurn(false);
 
                     }
                     for (ClientHandler client : clientHandlerList) {
-                        if (client.stop) {
+                        if (client.isServerStop()) {
 
                             deleteClient(client);
-                            clientHandlerList.getFirst().reset = true;
+                            clientHandlerList.getFirst().setResetServer(true);
                             begin();
                             break;
                         }
@@ -68,45 +68,46 @@ public class Server {
     }
 
     private static boolean isFirstServerChange() {
-        return (!clientHandlerList.getFirst().yourTurn && !clientHandlerList.getLast().yourTurn);
+        return (!clientHandlerList.getFirst().isYourTurn() && !clientHandlerList.getLast().isYourTurn());
     }
 
     private static void firstServerChange() {
-        clientHandlerList.getFirst().myNumber = null;
-        clientHandlerList.getLast().myNumber = null;
-        clientHandlerList.getFirst().yourTurn = true;
-        clientHandlerList.getFirst().sent = true;
+        clientHandlerList.getFirst().setMyNumber(null);
+        clientHandlerList.getLast().setMyNumber(null);
+        clientHandlerList.getFirst().setYourTurn(true);
+        clientHandlerList.getFirst().setSent(true);
     }
 
     private static void serverReset() {
-        clientHandlerList.getFirst().myNumber = "null";
-        clientHandlerList.getLast().myNumber = "null";
-        clientHandlerList.getFirst().wait = false;
-        clientHandlerList.getLast().wait = false;
-        clientHandlerList.getFirst().yourTurn = true;
-        clientHandlerList.getLast().yourTurn = true;
+        clientHandlerList.getFirst().setMyNumber(null);
+        clientHandlerList.getLast().setMyNumber(null);
+        clientHandlerList.getFirst().setWait(false);
+        clientHandlerList.getLast().setWait(false);
+        clientHandlerList.getFirst().setYourTurn(true);
+        clientHandlerList.getLast().setYourTurn(true);
     }
 
     private static boolean isServerNeedReset() {
-        if (clientHandlerList.getFirst().myNumber != null && clientHandlerList.getLast().myNumber != null) {
-            return (clientHandlerList.getFirst().myNumber.equals("null") && clientHandlerList.getFirst().wait
-                    || clientHandlerList.getLast().myNumber.equals("null") && clientHandlerList.getLast().wait);
-        } else return false;
+        if (clientHandlerList.getFirst().getMyNumber() != null && clientHandlerList.getLast().getMyNumber() != null) {
+            return (clientHandlerList.getFirst().getMyNumber().equals("null") && clientHandlerList.getFirst().isWait()
+                    || clientHandlerList.getLast().getMyNumber().equals("null") && clientHandlerList.getLast().isWait());
+        } else
+            return false;
     }
 
     private static void changeTurn(boolean changeZeroElementToFirst) {
         if (changeZeroElementToFirst) {
-            clientHandlerList.getFirst().yourTurn = false;
-            clientHandlerList.getFirst().wait = false;
-            clientHandlerList.getLast().myNumber = clientHandlerList.getFirst().myNumber;
-            clientHandlerList.getLast().yourTurn = true;
-            clientHandlerList.getLast().sent = true;
+            clientHandlerList.getFirst().setYourTurn(false);
+            clientHandlerList.getFirst().setWait(false);
+            clientHandlerList.getLast().setMyNumber(clientHandlerList.getFirst().getMyNumber());
+            clientHandlerList.getLast().setYourTurn(true);
+            clientHandlerList.getLast().setSent(true);
         } else {
-            clientHandlerList.getLast().yourTurn = false;
-            clientHandlerList.getLast().wait = false;
-            clientHandlerList.getFirst().myNumber = clientHandlerList.getLast().myNumber;
-            clientHandlerList.getFirst().yourTurn = true;
-            clientHandlerList.getFirst().sent = true;
+            clientHandlerList.getLast().setYourTurn(false);
+            clientHandlerList.getLast().setWait(false);
+            clientHandlerList.getFirst().setMyNumber(clientHandlerList.getLast().getMyNumber());
+            clientHandlerList.getFirst().setYourTurn(true);
+            clientHandlerList.getFirst().setSent(true);
         }
     }
 
@@ -117,7 +118,7 @@ public class Server {
     private static void end() {
         try {
             for (ClientHandler client : clientHandlerList) {
-                client.stop = true;
+                client.setServerStop(true);
             }
             try {
                 Thread.sleep(500);//wait half of second until ClientHandlers close

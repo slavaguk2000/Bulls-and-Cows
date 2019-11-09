@@ -6,17 +6,11 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.*;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.stage.Stage;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
-import java.io.File;
-import java.net.MalformedURLException;
 
 public class View extends Application {
 
@@ -29,8 +23,8 @@ public class View extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Model model = new Model();
-        Controller controller = new Controller(primaryStage);
+        new Model();
+        new Controller(primaryStage);
 
         primaryStage.setTitle("Model");
         primaryStage.setMaxWidth(700);
@@ -73,31 +67,17 @@ public class View extends Application {
 
         primaryStage.setOnCloseRequest(e -> {
             e.consume();
-            Controller.handleCloseRequest(primaryStage);
+            primaryStage.close();
+            Model.continueServerStop = false;
+            Model.end();
         });
-
-
 
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(5));
         hBox.setAlignment(Pos.CENTER);
-        addImage("src/image/cowBull.png", 290, 290, hBox);
         hBox.getChildren().addAll(opponentTable, myTable);
         primaryStage.setScene(new Scene(hBox, 700, 300));
         primaryStage.show();
-    }
-
-    static void addImage(String path, int weight, int height, Pane pane) {
-        try {
-            File file = new File(path);
-            Image image = new Image(file.toURI().toURL().toString(), false);
-            ImageView imageView = new ImageView(image);
-            imageView.setFitHeight(height);
-            imageView.setFitWidth(weight);
-            pane.getChildren().add(imageView);
-        } catch (MalformedURLException ex) {
-            ex.getStackTrace();
-        }
     }
 
     public static void main(String[] args) {

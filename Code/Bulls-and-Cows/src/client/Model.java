@@ -5,22 +5,22 @@ import java.net.*;
 
 public class Model extends Thread {
     private static Socket socket;
-    static boolean beginServerStop = false;
-    static boolean continueServerStop = true;
+    private boolean beginServerStop;
+    private boolean continueServerStop = true;
 
-    static boolean myTurn = false;
-    static String myGuess;
-    static String opponentGuess;
-    static String myNumber;
-    static String opponentNumber;
-    static boolean sendServer = false;
-    static boolean reset = false;
+    private boolean myTurn;
+    private String myGuess;
+    private String opponentGuess;
+    private String myNumber;
+    private String opponentNumber;
+    private boolean sendServer;
+    private boolean reset;
 
     Model() {
         start();
     }
 
-    static void reset() {
+    public void reset() {
         myTurn = false;
         myGuess = null;
         opponentGuess = null;
@@ -34,7 +34,7 @@ public class Model extends Thread {
         handle();
     }
 
-    private static void connect() {
+    private void connect() {
         try {
             socket = new Socket(InetAddress.getLocalHost(), 4444);
         } catch (ConnectException ex) {
@@ -51,7 +51,7 @@ public class Model extends Thread {
         }
     }
 
-    private static void handle() {
+    private void handle() {
         try {
             socket.setSoTimeout(500);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

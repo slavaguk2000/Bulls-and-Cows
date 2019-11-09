@@ -1,4 +1,4 @@
-package client;
+﻿package client;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -17,6 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class Controller {
+
     public Controller(Stage primaryStage) {
         Thread serverErrorThread = new Thread(() -> {// server not activate
             Runnable updater = () -> {
@@ -59,8 +60,6 @@ public class Controller {
                     Model.reset = false;
                 }
                 if (Model.myTurn) {
-
-
                     if (Model.opponentGuess != null && Model.opponentGuess.equals(Model.myNumber)) {
                         View.opponentData.add(new Data(Model.opponentGuess, countCowBull(Model.opponentGuess, Model.myNumber)));
                         winWindow(primaryStage, false);
@@ -91,15 +90,15 @@ public class Controller {
 
     }
 
-    private static boolean checkTextField(String line) {
-        if (!line.matches("^\\d{4}$")) return false;//строка состоит ли из цифр
-        for (int i = 0; i < 3; i++)//если цифры в числе повторяются
+    private boolean checkTextField(String line) {
+        if (!line.matches("^\\d{4}$")) return false;//check string contains only 4 digits
+        for (int i = 0; i < 3; i++)//check digits not repeat
             for (int j = 1 + i; j < 4; j++)
                 if (line.charAt(i) == line.charAt(j)) return false;
         return true;
     }
 
-    private static String countCowBull(String baseString, String compareString) {
+    private String countCowBull(String baseString, String compareString) {
         short cow = 0, bull = 0;
         for (short i = 0; i < 4; i++)
             for (short j = 0; j < 4; j++) {
@@ -111,7 +110,7 @@ public class Controller {
         return cow + "c" + bull + "b";
     }
 
-    static void handleCloseRequest(Stage primaryStage) {
+    private void handleCloseRequest(Stage primaryStage) {
         primaryStage.close();
         Model.continueServerStop = false;
         Model.end();
@@ -133,19 +132,20 @@ public class Controller {
     private void winWindow(Stage primaryStage, boolean isYouWinner) {
 
         Stage secondStage = new Stage();
-        String pathToImage;
         secondStage.initModality(Modality.APPLICATION_MODAL);
         secondStage.setResizable(false);
         secondStage.setWidth(210);
         secondStage.setHeight(350);
         secondStage.setX(primaryStage.getX() + primaryStage.getWidth() / 2 - secondStage.getWidth() / 2);
         secondStage.setY(primaryStage.getY() + primaryStage.getHeight() / 2 - secondStage.getHeight() / 2);
+        Label labelResult = new Label();
+        labelResult.setStyle("-fx-font-weight: bold");
         if (isYouWinner) {
             secondStage.setTitle("Victory!!!");
-            pathToImage = "src/image/win.png";
+            labelResult.setText("Victory!!!");
         } else {
             secondStage.setTitle("Defeat!!!");
-            pathToImage = "src/image/gameOver.png";
+            labelResult.setText("Defeat!!!");
         }
 
         Label label = new Label("Would you like to repeat?");
@@ -176,14 +176,12 @@ public class Controller {
         buttons.setPadding(new Insets(5));
         buttons.getChildren().addAll(buttonYes, buttonNo);
         VBox layout = new VBox(20);
-        View.addImage(pathToImage, 200, 200, layout);
-        layout.getChildren().addAll(label, buttons);
+        layout.getChildren().addAll(labelResult, label, buttons);
 
         layout.setAlignment(Pos.CENTER);
         Scene secondScene = new Scene(layout);
         secondStage.setScene(secondScene);
         secondStage.show();
-
     }
 
     private void secondWindow(Stage primaryStage, String massage, String title) {
@@ -223,6 +221,5 @@ public class Controller {
         Scene secondScene = new Scene(layout);
         secondStage.setScene(secondScene);
         secondStage.show();
-
     }
 }
