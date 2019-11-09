@@ -1,4 +1,5 @@
-# Сетевая игра Bulls-and-Cows
+# Bulls-and-Cows
+Сетевая игра </br>
 Язык реализации: Java</br>
 Среда разработки: [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 
