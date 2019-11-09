@@ -1,7 +1,6 @@
 # Сетевая игра Bulls-and-Cows
-Язык реализации: Java
-Среда разработки: [IntelliJ IDEA]</br>
-(https://www.jetbrains.com/idea/)
+Язык реализации: Java</br>
+Среда разработки: [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 
 # Содержание
 1 [Документация](Documents)  
