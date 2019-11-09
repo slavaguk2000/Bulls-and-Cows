@@ -1,4 +1,5 @@
-# Bulls-and-Cows
+# Сетевая игра Bulls-and-Cows
+Язык реализации: Java
 
 # Содержание
 1 [Документация](Documents)  
