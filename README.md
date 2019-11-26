@@ -8,3 +8,5 @@
 1.1 [Требования](Documents/Requirements/Requirements%20Document.md)<br>
 1.2 [Диаграммы](Documents/Diagrams/README.md)  
 2 [Код](Code)  
+3 [План тестирования](Testing/TestPlan.md)  
+4 [Результат тестирования](Testing/TestResults.md)  
